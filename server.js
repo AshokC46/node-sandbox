@@ -1,11 +1,22 @@
 require("dotenv").config();
 const express = require("express");
 require("./db.js");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 
 const app = express();
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
+
+const logRequest = (req, res, next) => {
+  console.log(
+    `[${new Date().toLocaleString()})], Request made to : ${req.originalUrl}`,
+  );
+  next();
+};
+
+app.use(logRequest);
 
 app.get("/", function (req, res) {
   res.send("Hello world");
