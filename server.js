@@ -18,6 +18,34 @@ const logRequest = (req, res, next) => {
 
 app.use(logRequest);
 
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      // Step A: Look up the user in MongoDB by their username
+      const user = await User.findOne({ username: username });
+
+      // If no user matches that name, stop and return false
+      if (!user) {
+        return done(null, false, { message: "Incorrect username." });
+      }
+
+      // Step B: Compare the incoming plain text password with the hashed database password
+      const isMatch = await user.comparePassword(password);
+
+      // If the password doesn't match, stop and return false
+      if (!isMatch) {
+        return done(null, false, { message: "Incorrect password." });
+      }
+
+      // Step C: If both pass, authentication is successful Pass the user object forward.
+      return done(null, user);
+    } catch (err) {
+      // If a database error or code crash happens, return the error
+      return done(err);
+    }
+  }),
+);
+
 app.get("/", function (req, res) {
   res.send("Hello world");
 });
