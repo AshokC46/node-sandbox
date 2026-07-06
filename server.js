@@ -1,11 +1,14 @@
 require("dotenv").config();
 const express = require("express");
 require("./db.js");
+const Person = require("./models/person.js");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
 const app = express();
 app.use(express.json());
+
+app.use(passport.initialize());
 
 const PORT = process.env.PORT || 3000;
 
@@ -22,7 +25,7 @@ passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
       // Step A: Look up the user in MongoDB by their username
-      const user = await User.findOne({ username: username });
+      const user = await Person.findOne({ username: username });
 
       // If no user matches that name, stop and return false
       if (!user) {
@@ -46,13 +49,15 @@ passport.use(
   }),
 );
 
-app.get("/", function (req, res) {
-  res.send("Hello world");
+const localAuthMiddleware = passport.authenticate("local", { session: false });
+
+app.get("/",  function (req, res) {
+  res.send("Welcome to the Website");
 });
 
 const personRoutes = require("./routes/personRoutes.js");
 
-app.use("/person", personRoutes);
+app.use("/person", localAuthMiddleware, personRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
