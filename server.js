@@ -51,7 +51,7 @@ passport.use(
 
 const localAuthMiddleware = passport.authenticate("local", { session: false });
 
-app.get("/",  function (req, res) {
+app.get("/", function (req, res) {
   res.send("Welcome to the Website");
 });
 
