@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
- const dbURI = process.env.MONGO_URI;
+const dbURI = process.env.MONGO_URI;
 // const dbURI = process.env.MONGODB_URI;
 
 mongoose
