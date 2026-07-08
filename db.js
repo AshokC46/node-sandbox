@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
+
+// Mongo or Local URL
 const dbURI = process.env.MONGO_URI;
+
+//Atlas URL
 // const dbURI = process.env.MONGODB_URI;
 
 mongoose
